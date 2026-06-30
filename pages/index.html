@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>凡人修仙传 - 粉丝站点首页</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+  /* Hero 暗金细线分隔 + 印章低透明 */
+  .hero-divider {
+    width: 180px; height: 1px; margin: 16px auto 24px;
+    background: linear-gradient(90deg, transparent, var(--anjin) 28%, var(--jinbian) 50%, var(--anjin) 72%, transparent);
+    position: relative; z-index: 2; opacity: .9;
+  }
+  .hero-divider::before, .hero-divider::after {
+    content: ""; position: absolute; top: 50%; width: 6px; height: 6px;
+    transform: translateY(-50%) rotate(45deg);
+    border: 1px solid var(--anjin); background: rgba(27,42,58,.7);
+  }
+  .hero-divider::before { left: -3px; }
+  .hero-divider::after { right: -3px; }
+  .hero h1 { color: var(--text-title); letter-spacing: 0.22em; text-shadow: 0 2px 14px rgba(0,0,0,.6), 0 0 1px rgba(200,167,90,.4); }
+  .hero h1 .seal { opacity: .55; }
+  .hero .hero-sub { position: relative; z-index: 2; color: var(--wuhui); letter-spacing: .32em; font-size: 13px; margin: 0 0 4px; opacity: .8; }
+  .hero p, .hero .row { position: relative; z-index: 2; }
+  .hero-bg { opacity: .42; }
+
+  /* ===== 板块一：荣誉殿堂 ===== */
+  .honor-hall { margin-top: 0; position: relative; }
+  .honor-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    position: relative;
+    z-index: 2;
+  }
+  .honor-card {
+    position: relative;
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.015) 0 1px, transparent 1px 5px),
+      var(--bg-card);
+    border: 1px solid var(--anjin);
+    border-left: 3px solid var(--anjin);
+    border-radius: var(--radius);
+    padding: 20px 22px 18px;
+    transition: border-color .24s, background .24s;
+  }
+  .honor-card::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+    pointer-events: none;
+  }
+  .honor-card:hover {
+    border-color: var(--jinbian);
+    border-left-color: var(--jinbian);
+    background: rgba(46,43,38,0.62);
+  }
+  .honor-year {
+    font-family: var(--serif-en);
+    font-size: 30px;
+    font-weight: 900;
+    color: var(--text-title);
+    letter-spacing: 0.1em;
+    line-height: 1.1;
+  }
+  .honor-award {
+    font-size: 18px;
+    color: var(--zhibai);
+    letter-spacing: 0.14em;
+    font-weight: 700;
+    margin: 8px 0 4px;
+  }
+  .honor-issuer {
+    font-size: 12.5px;
+    color: var(--text-sub);
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .honor-desc {
+    font-size: 13px;
+    color: var(--text-main);
+    line-height: 1.95;
+    letter-spacing: 0.03em;
+    margin: 0;
+  }
+
+  /* ===== 板块二：数据概览 ===== */
+  .data-overview { margin-top: 64px; position: relative; }
+  .data-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    position: relative;
+    z-index: 2;
+  }
+  .data-card {
+    position: relative;
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,0.012) 0 1px, transparent 1px 5px),
+      var(--bg-card);
+    border: 1px solid var(--anjin);
+    border-radius: var(--radius);
+    padding: 26px 18px 22px;
+    text-align: center;
+    transition: border-color .24s, background .24s;
+  }
+  .data-card::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+    pointer-events: none;
+  }
+  .data-card:hover { border-color: var(--jinbian); background: rgba(46,43,38,0.62); }
+  .data-num {
+    font-family: var(--serif-en);
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--text-title);
+    letter-spacing: 0.06em;
+    line-height: 1.15;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.4);
+    word-break: keep-all;
+  }
+  .data-num .data-unit {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--text-sub);
+    letter-spacing: 0.08em;
+  }
+  .data-lbl {
+    font-size: 13px;
+    color: var(--text-sub);
+    letter-spacing: 0.16em;
+    margin-top: 10px;
+  }
+  .data-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-weak);
+    letter-spacing: 0.08em;
+    margin-top: 20px;
+    font-style: italic;
+  }
+
+  /* ===== 板块三：最新动态 ===== */
+  .latest-news { margin-top: 64px; margin-bottom: 64px; position: relative; }
+  .news-feature {
+    position: relative;
+    border: 1px solid var(--anjin);
+    border-radius: var(--radius);
+    overflow: hidden;
+    min-height: 400px;
+    display: flex;
+    align-items: flex-end;
+    background-color: var(--xuanqing);
+  }
+  .news-feature::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+    pointer-events: none;
+    z-index: 5;
+  }
+  .news-feature .news-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: .58;
+    filter: grayscale(0.2) brightness(0.62) contrast(1.05);
+    z-index: 0;
+  }
+  .news-feature .news-shade {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(27,42,58,0.20) 0%, rgba(27,42,58,0.55) 42%, rgba(20,28,38,0.94) 100%);
+  }
+  .news-feature .fog-layer { z-index: 3; }
+  .news-content {
+    position: relative;
+    z-index: 4;
+    width: 100%;
+    max-width: 720px;
+    padding: 32px 34px 34px;
+  }
+  .news-date {
+    font-family: var(--serif-en);
+    font-size: 13px;
+    color: var(--anjin);
+    letter-spacing: 0.2em;
+    margin-bottom: 8px;
+  }
+  .news-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-title);
+    letter-spacing: 0.2em;
+    margin: 0 0 14px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.65);
+  }
+  .news-desc {
+    font-size: 14.5px;
+    color: var(--wuhui);
+    line-height: 2.0;
+    letter-spacing: 0.06em;
+    margin: 0 0 20px;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.65);
+  }
+
+  /* ===== 三大板块响应式 ===== */
+  @media (max-width: 720px) {
+    .honor-grid { grid-template-columns: 1fr; }
+    .data-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .data-num { font-size: 1.6rem; }
+    .data-num .data-unit { font-size: 0.9rem; }
+    .news-feature { min-height: 320px; }
+    .news-content { padding: 24px 20px 24px; }
+    .news-title { font-size: 22px; letter-spacing: 0.16em; }
+    .honor-year { font-size: 26px; }
+  }
+  @media (max-width: 420px) {
+    .data-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero" data-parallax="0.12">
+  <img class="hero-bg" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=epic%20Chinese%20xianxia%20scene%2C%20lone%20cultivator%20in%20green%20robe%20standing%20on%20misty%20cliff%20edge%2C%20sea%20of%20clouds%2C%20distant%20mountain%20peaks%2C%20ancient%20stone%20path%2C%20pine%20forest%2C%20dawn%20mist%2C%20atmospheric%2C%20cinematic%2C%20ink%20wash%20painting%20style%2C%20muted%20dark%20teal%20and%20bronze%20gold%20tones%2C%20no%20bright%20neon&image_size=landscape_16_9" alt="凡人修仙传 山崖云海古道修士背影">
+  <div class="fog-layer"></div>
+  <div class="dim-light"></div>
+  <p class="hero-sub">山 村 少 年 · 踏 破 红 尘 · 逆 天 修 仙</p>
+  <h1>凡人修仙传<span class="seal">修仙</span></h1>
+  <div class="hero-divider"></div>
+  <p>一个普通山村少年韩立，偶然踏上修仙之路。凭坚毅心性与机缘造化，于漫漫修仙路上披荆斩棘，终成灵界至尊。本站为粉丝自发整理之百科与交流之地。</p>
+  <div class="row" style="justify-content:center">
+    <a href="#boards" class="btn">进入修仙界</a>
+    <a href="register.html" class="btn ghost">注册账号</a>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <!-- 板块一：荣誉殿堂 -->
+  <section class="honor-hall">
+    <h2 class="page-title">荣誉殿堂</h2>
+    <p class="page-sub">国漫标杆的荣耀之路</p>
+    <div class="honor-grid">
+      <article class="honor-card">
+        <div class="honor-year">2022</div>
+        <div class="honor-award">国风传承奖</div>
+        <div class="honor-issuer">第19届中国动漫金龙奖（CACC）</div>
+        <p class="honor-desc">以精致3D技术呈现中国传统修仙文化，获金龙奖特别设立的国风传承奖项。</p>
+      </article>
+      <article class="honor-card">
+        <div class="honor-year">2025</div>
+        <div class="honor-award">年度国漫IP</div>
+        <div class="honor-issuer">微博文化之夜盛典</div>
+        <p class="honor-desc">凭借现象级影响力与口碑，荣获微博年度国漫IP大奖。</p>
+      </article>
+      <article class="honor-card">
+        <div class="honor-year">2025</div>
+        <div class="honor-award">最佳3D动画大奖</div>
+        <div class="honor-issuer">第30届亚洲电视大奖</div>
+        <p class="honor-desc">亚洲电视大奖最佳3D动画，代表中国3D动画技术最高水平。</p>
+      </article>
+      <article class="honor-card">
+        <div class="honor-year">2025</div>
+        <div class="honor-award">最佳剧情奖</div>
+        <div class="honor-issuer">2025年度国漫年番颁奖典礼</div>
+        <p class="honor-desc">凭借"韩立结婴"等经典剧情，获得年度最佳剧情奖。</p>
+      </article>
+      <article class="honor-card">
+        <div class="honor-year">2025</div>
+        <div class="honor-award">央视纪录片展示案例</div>
+        <div class="honor-issuer">央视《大国基石》</div>
+        <p class="honor-desc">作为中国动画工业化代表作品，入选央视纪录片展示案例。</p>
+      </article>
+      <article class="honor-card">
+        <div class="honor-year">2025</div>
+        <div class="honor-award">Netflix海外周榜TOP1</div>
+        <div class="honor-issuer">Netflix</div>
+        <p class="honor-desc">海外播出登顶Netflix剧集周榜第一名，海外流媒体累计播放量突破2亿次。</p>
+      </article>
+      <article class="honor-card">
+        <div class="honor-year">2025</div>
+        <div class="honor-award">国漫众筹纪录保持者</div>
+        <div class="honor-issuer">Bilibili会员购</div>
+        <p class="honor-desc">周边众筹金额突破4025万元，创下国产动画众筹历史最高纪录。</p>
+      </article>
+      <article class="honor-card">
+        <div class="honor-year">2024</div>
+        <div class="honor-award">B站国创区收视第一</div>
+        <div class="honor-issuer">Bilibili</div>
+        <p class="honor-desc">2023—2024年连续两年蝉联B站国创区年度收视冠军。</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 板块二：数据概览 -->
+  <section class="data-overview">
+    <h2 class="page-title">数据概览</h2>
+    <p class="page-sub">B站国创现象级作品</p>
+    <div class="data-grid">
+      <div class="data-card">
+        <div class="data-num" data-target="plays">10亿+</div>
+        <div class="data-lbl">系列累计播放量</div>
+      </div>
+      <div class="data-card">
+        <div class="data-num" data-target="followers">1500万+</div>
+        <div class="data-lbl">B站追番人数</div>
+      </div>
+      <div class="data-card">
+        <div class="data-num" data-target="bili_score">9.8 <span class="data-unit">/ 10.0</span></div>
+        <div class="data-lbl">B站评分</div>
+      </div>
+      <div class="data-card">
+        <div class="data-num" data-target="douban_score">8.5 <span class="data-unit">/ 10.0</span></div>
+        <div class="data-lbl">豆瓣评分</div>
+      </div>
+      <div class="data-card">
+        <div class="data-num" data-target="episodes">约 130 <span class="data-unit">集</span></div>
+        <div class="data-lbl">已播出集数</div>
+      </div>
+      <div class="data-card">
+        <div class="data-num" data-target="duration">约 5 年 10 个月</div>
+        <div class="data-lbl">开播至今</div>
+      </div>
+    </div>
+    <p class="data-note">部分数据为参考值，B站实时数据每小时由爬虫自动更新。</p>
+  </section>
+
+  <!-- 板块三：最新动态专题 -->
+  <section class="latest-news">
+    <h2 class="page-title">最新动态</h2>
+    <p class="page-sub">年番复播 · 荣耀归来</p>
+    <article class="news-feature">
+      <img class="news-bg" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Chinese%20xianxia%20epic%20battle%20scene%20Mulan%2C%20cultivators%20flying%20swords%20clash%2C%20formation%20light%2C%20misty%20battlefield%2C%20ink%20wash%20painting%2C%20muted%20bronze%20gold%20tones%2C%20cinematic&image_size=landscape_16_9" alt="慕兰之战 年番复播 修士飞剑交锋">
+      <div class="news-shade"></div>
+      <div class="fog-layer"></div>
+      <div class="news-content">
+        <div class="news-date">2026 年 6 月 13 日</div>
+        <h3 class="news-title">慕兰之战 · 年番复播</h3>
+        <p class="news-desc">韩立元婴大成，慕兰大战一触即发。新篇章、新建模、新特效——国漫天花板荣耀归来。已开播，请道友速回宗门。</p>
+        <a href="https://www.bilibili.com/bangumi/play/ep733316" class="btn" target="_blank" rel="noopener">前往B站观看</a>
+      </div>
+    </article>
+  </section>
+
+  <!-- 30+ 板块导航 -->
+  <h2 class="page-title" id="boards">修仙百艺 · 三十余板块</h2>
+  <p class="page-sub">点击板块进入对应页面，全站内容持续补全中</p>
+  <div class="board-grid" id="board-grid">
+    <a class="board-item" href="characters.html">人物百科<small>数百位修士</small></a>
+    <a class="board-item" href="treasures.html">法宝图鉴<small>千万法器</small></a>
+    <a class="board-item" href="beasts.html">灵兽妖兽<small>数百只</small></a>
+    <a class="board-item" href="scenes.html">场景情节<small>每场详介</small></a>
+    <a class="board-item" href="cultivation.html">功法境界<small>境界灵根</small></a>
+    <a class="board-item" href="sects.html">宗门势力<small>正魔两道</small></a>
+    <a class="board-item" href="geography.html">地理秘境<small>九州四海</small></a>
+    <a class="board-item" href="pills.html">丹药灵草<small>灵丹妙药</small></a>
+    <a class="board-item" href="materials.html">矿石材料<small>炼器原料</small></a>
+    <a class="board-item" href="runes.html">符阵禁制<small>符箓阵法</small></a>
+    <a class="board-item" href="novel.html">原著小说<small>章回概要</small></a>
+    <a class="board-item" href="timeline.html">时间线<small>大事年表</small></a>
+    <a class="board-item" href="quotes.html">名场面语录<small>经典台词</small></a>
+    <a class="board-item" href="battles.html">战斗解析<small>经典战役</small></a>
+    <a class="board-item" href="terms.html">术语词典<small>修仙术语</small></a>
+    <a class="board-item" href="map.html">世界地图<small>诸界区域</small></a>
+    <a class="board-item" href="music.html">音乐配音<small>配乐合集</small></a>
+    <a class="board-item" href="era.html">年代纪元<small>上古至今</small></a>
+    <a class="board-item" href="legends.html">秘宝传说<small>诸界传说</small></a>
+    <a class="board-item" href="anecdotes.html">轶事趣闻<small>修仙百态</small></a>
+    <a class="board-item" href="creations.html">读者二创<small>道友投稿</small></a>
+    <a class="board-item" href="books.html">推荐书单<small>同类佳作</small></a>
+    <a class="board-item" href="artifacts.html">装备搭配<small>方案合集</small></a>
+    <a class="board-item" href="auctions.html">拍卖会<small>珍品图鉴</small></a>
+    <a class="board-item" href="trials.html">试炼秘境<small>历练挑战</small></a>
+    <a class="board-item" href="system.html">修仙体系<small>体系科普</small></a>
+    <a class="board-item" href="relations.html">人物关系网<small>恩怨情仇</small></a>
+    <a class="board-item" href="episodes.html">动画剧集<small>更新中</small></a>
+    <a class="board-item" href="qa.html">问答系统<small>数百题</small></a>
+    <a class="board-item" href="bilibili.html">B站数据<small>实时统计</small></a>
+    <a class="board-item" href="#joinus">加入我们<small>代公部招新</small></a>
+  </div>
+
+  <!-- 底部留言区 -->
+  <div id="message" class="card mt-lg">
+    <h3>互动留言区</h3>
+    <p class="muted">道友可在此处留下短评或长评。长评需填写手机号或邮箱，将获得专属 12 位长评 ID。</p>
+
+    <div class="form-group">
+      <label>昵称 <span class="req">*</span></label>
+      <input class="input" id="msg-nick" placeholder="你的昵称">
+    </div>
+    <div class="form-group">
+      <label>留言内容 <span class="req">*</span></label>
+      <textarea class="input" id="msg-content" placeholder="说点什么…（短评直接发送）"></textarea>
+    </div>
+    <div class="form-group" id="msg-contact-wrap">
+      <label>手机号 / 邮箱（仅长评必填）</label>
+      <input class="input" id="msg-contact" placeholder="留空则为短评；填写后视为长评">
+    </div>
+    <div class="form-msg hidden" id="msg-msg"></div>
+    <div class="row">
+      <button class="btn" onclick="submitShort()">发表短评</button>
+      <button class="btn ghost" onclick="submitLong()">发表长评</button>
+    </div>
+
+    <h4 class="mt" style="color:var(--text-title)">最新留言</h4>
+    <div class="comment-list" id="msg-list"></div>
+  </div>
+
+  <!-- 加入我们（代公部） -->
+  <div id="joinus" class="card mt-lg">
+    <h3>加入我们 · 代公部</h3>
+    <p>本站由粉丝自发组织维护，欢迎志同道合的道友加入「代公部」，一起整理海量修仙资料。</p>
+    <div class="row">
+      <div class="card" style="flex:1;min-width:200px">
+        <p class="meta"><strong>Email：</strong>代公部</p>
+        <p class="meta"><strong>QQ 群：</strong>代公部</p>
+        <p class="meta"><strong>微信：</strong>代公部</p>
+      </div>
+      <div class="card" style="flex:1;min-width:200px">
+        <p class="muted">说明：为避免信息泄露，统一填写为「代公部」，具体联系方式请在加入后于内部沟通。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 免责声明 -->
+  <div class="card mt-lg" style="border-color:var(--line-strong)">
+    <h3>免责声明</h3>
+    <p class="disclaimer">数据量过大，整理可能有误。本站为《凡人修仙传》粉丝自发整理的交流站点，所有内容来自公开资料，仅供学习交流之用，不用于商业用途。如有侵犯版权之处，请联系「代公部」删除。</p>
+  </div>
+
+</div>
+
+<script src="/assets/js/common.js"></script>
+<script src="/assets/js/comments.js"></script>
+<script>
+  // 加载留言
+  FR_loadComments("index", "msg-list");
+
+  function submitShort() {
+    FR_submitComment({
+      type: "short", board: "index",
+      nicknameId: "msg-nick", contentId: "msg-content",
+      msgId: "msg-msg", listId: "msg-list"
+    });
+  }
+  function submitLong() {
+    FR_submitComment({
+      type: "long", board: "index",
+      nicknameId: "msg-nick", contentId: "msg-content", contactId: "msg-contact",
+      msgId: "msg-msg", listId: "msg-list"
+    });
+  }
+</script>
+</body>
+</html>

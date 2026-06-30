@@ -1,0 +1,38 @@
+{
+  "name": "凡人修仙传粉丝网站",
+  "description": "凡人修仙传粉丝自发整理的多页面站点：人物百科、法宝图鉴、灵兽妖兽、场景情节、音乐配音、问答、B站数据等。技术栈：Node.js + Express + PostgreSQL + 原生多页 HTML/CSS/JS。",
+  "website": "https://fanrenxiuxianzhuan.onrender.com",
+  "repository": "https://github.com/your-username/fanrenxiuxianzhuan",
+  "logo": "assets/img/placeholder.txt",
+  "keywords": [
+    "凡人修仙传",
+    "粉丝网站",
+    "Node.js",
+    "Express",
+    "PostgreSQL",
+    "bilibili",
+    "修仙",
+    "动画"
+  ],
+  "success_url": "/",
+  "env": {
+    "NODE_ENV": {
+      "description": "运行环境",
+      "value": "production"
+    },
+    "DATABASE_URL": {
+      "description": "PostgreSQL 连接串（由 Render PostgreSQL 服务自动注入）"
+    },
+    "DEV_PASSWORD": {
+      "description": "开发者面板登录密码",
+      "value": "HU123456789"
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    }
+  },
+  "stack": "heroku-22"
+}

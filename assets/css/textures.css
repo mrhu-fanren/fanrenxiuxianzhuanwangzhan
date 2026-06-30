@@ -1,0 +1,138 @@
+/* ===========================================================
+   凡人修仙传 - 材质与光影工具类（纯 CSS，无外部图片）
+   用 SVG 噪点（feTurbulence 去色）+ 多层渐变模拟真实材质
+   使用：在元素上追加 .tx-stone / .tx-cloth / .tx-metal / .tx-wood
+        / .tx-paper / .tx-ground / .fog-layer / .dim-light
+   =========================================================== */
+
+:root {
+  /* 去色灰度噪点（可复用），feColorMatrix saturate=0 保证不引入彩色噪点 */
+  --noise-gray: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* 细密噪点（更高频，用于纸/布） */
+  --noise-fine: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.25' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------------- 山石粗糙颗粒 ---------------- */
+/* 多层径向渐变模拟岩石斑驳凹凸，叠加灰度噪点颗粒 */
+.tx-stone {
+  background-color: #2a2c30;
+  background-image:
+    radial-gradient(circle at 18% 22%, rgba(80, 76, 68, 0.55), transparent 26%),
+    radial-gradient(circle at 78% 14%, rgba(40, 42, 46, 0.65), transparent 30%),
+    radial-gradient(circle at 62% 78%, rgba(90, 84, 74, 0.42), transparent 28%),
+    radial-gradient(circle at 30% 88%, rgba(36, 38, 42, 0.6), transparent 32%),
+    repeating-linear-gradient(118deg, rgba(0, 0, 0, 0.05) 0 2px, transparent 2px 7px),
+    var(--noise-gray);
+  background-blend-mode: normal, normal, normal, normal, soft-light, overlay;
+  background-size: auto, auto, auto, auto, auto, 180px 180px;
+}
+
+/* ---------------- 布料棉麻织纹 ---------------- */
+/* 经纬十字重复线性渐变模拟棉麻织纹，叠加细噪点磨损 */
+.tx-cloth {
+  background-color: #3a352d;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.18) 0 1px, rgba(255, 255, 255, 0.04) 1px 2px, transparent 2px 4px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0 1px, rgba(255, 255, 255, 0.04) 1px 2px, transparent 2px 4px),
+    radial-gradient(circle at 50% 40%, rgba(169, 140, 90, 0.10), transparent 60%),
+    var(--noise-fine);
+  background-blend-mode: multiply, multiply, soft-light, overlay;
+  background-size: auto, auto, auto, 120px 120px;
+}
+
+/* ---------------- 金属青铜氧化 ---------------- */
+/* 线性光泽 + 多处氧化斑驳径向块（暗铜绿/锈红，低饱和） */
+.tx-metal {
+  background-color: #4a3f2c;
+  background-image:
+    linear-gradient(125deg, rgba(255, 240, 200, 0.10) 0%, transparent 22%, transparent 68%, rgba(0, 0, 0, 0.28) 100%),
+    radial-gradient(circle at 24% 30%, rgba(74, 92, 70, 0.42), transparent 24%),
+    radial-gradient(circle at 72% 64%, rgba(110, 58, 58, 0.34), transparent 22%),
+    radial-gradient(circle at 50% 88%, rgba(58, 70, 60, 0.38), transparent 26%),
+    repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.05) 0 1px, transparent 1px 5px),
+    var(--noise-gray);
+  background-blend-mode: normal, normal, normal, normal, soft-light, overlay;
+  background-size: auto, auto, auto, auto, auto, 180px 180px;
+}
+
+/* ---------------- 旧木纹 ---------------- */
+/* 深浅交替重复线性渐变模拟木纹走向，叠加节疤径向斑 */
+.tx-wood {
+  background-color: #3a2c20;
+  background-image:
+    radial-gradient(ellipse 40px 14px at 30% 28%, rgba(20, 14, 10, 0.55), transparent 70%),
+    radial-gradient(ellipse 60px 16px at 70% 72%, rgba(20, 14, 10, 0.45), transparent 70%),
+    repeating-linear-gradient(90deg,
+      rgba(58, 44, 32, 0.9) 0 3px,
+      rgba(74, 56, 40, 0.55) 3px 7px,
+      rgba(40, 30, 22, 0.85) 7px 9px,
+      rgba(86, 66, 46, 0.4) 9px 14px),
+    var(--noise-fine);
+  background-blend-mode: normal, normal, normal, overlay;
+  background-size: auto, auto, auto, 120px 120px;
+}
+
+/* ---------------- 宣纸竹简 ---------------- */
+/* 米白纸底 + 散落墨迹斑点（径向），低透明度，可叠于深色面板之上做正文底 */
+.tx-paper {
+  background-color: #e7e1d2;
+  background-image:
+    radial-gradient(circle at 16% 24%, rgba(60, 50, 40, 0.22) 0 2px, transparent 3px),
+    radial-gradient(circle at 72% 18%, rgba(60, 50, 40, 0.18) 0 2px, transparent 3px),
+    radial-gradient(circle at 44% 62%, rgba(60, 50, 40, 0.20) 0 2px, transparent 3px),
+    radial-gradient(circle at 86% 78%, rgba(60, 50, 40, 0.16) 0 2px, transparent 3px),
+    radial-gradient(circle at 28% 86%, rgba(60, 50, 40, 0.18) 0 2px, transparent 3px),
+    linear-gradient(180deg, rgba(231, 225, 210, 0.96), rgba(218, 210, 192, 0.96)),
+    var(--noise-fine);
+  background-blend-mode: normal, normal, normal, normal, normal, normal, overlay;
+  background-size: auto, auto, auto, auto, auto, auto, 120px 120px;
+  color: #2e2b26;
+}
+
+/* ---------------- 石板泥土 ---------------- */
+/* 灰褐渐变 + 横竖裂纹重复线性渐变，叠加噪点 */
+.tx-ground {
+  background-color: #2f2d28;
+  background-image:
+    linear-gradient(180deg, rgba(56, 54, 48, 0.95) 0%, rgba(44, 42, 38, 0.95) 60%, rgba(36, 34, 30, 0.95) 100%),
+    repeating-linear-gradient(8deg, transparent 0 38px, rgba(0, 0, 0, 0.22) 38px 39px, transparent 39px 70px),
+    repeating-linear-gradient(82deg, transparent 0 54px, rgba(0, 0, 0, 0.16) 54px 55px, transparent 55px 92px),
+    radial-gradient(circle at 40% 50%, rgba(80, 72, 60, 0.22), transparent 40%),
+    var(--noise-gray);
+  background-blend-mode: normal, normal, normal, soft-light, overlay;
+  background-size: auto, auto, auto, auto, 180px 180px;
+}
+
+/* ---------------- 体积雾背景层 ---------------- */
+/* 绝对定位覆盖层，柔和漫射半透明白雾，不阻挡点击 */
+.fog-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image:
+    radial-gradient(ellipse 70% 60% at 30% 40%, rgba(216, 220, 227, 0.18), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 75% 55%, rgba(200, 197, 190, 0.14), transparent 72%),
+    radial-gradient(ellipse 80% 40% at 50% 85%, rgba(234, 230, 219, 0.12), transparent 70%),
+    linear-gradient(180deg, rgba(216, 220, 227, 0.06) 0%, transparent 50%, rgba(216, 220, 227, 0.04) 100%);
+  background-blend-mode: screen, screen, screen, normal;
+  mix-blend-mode: screen;
+  animation: fog-drift 24s ease-in-out infinite alternate;
+}
+@keyframes fog-drift {
+  0%   { background-position: 0% 0%, 0% 0%, 0% 0%, 0 0; opacity: .85; }
+  100% { background-position: 6% 4%, -5% 3%, 3% -3%, 0 0; opacity: 1; }
+}
+
+/* ---------------- 柔和漫射光 ---------------- */
+/* 绝对定位暖光层，低透明度径向暖金，模拟晨昏/烛火漫射 */
+.dim-light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background-image:
+    radial-gradient(circle at 50% 18%, rgba(200, 167, 90, 0.18), rgba(184, 138, 58, 0.06) 35%, transparent 62%),
+    radial-gradient(circle at 50% 0%, rgba(234, 220, 180, 0.10), transparent 50%);
+  mix-blend-mode: screen;
+}

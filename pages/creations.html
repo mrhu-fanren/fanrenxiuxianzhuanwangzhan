@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>读者二创 - 凡人修仙传</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+  .stats-line { text-align: center; color: var(--ink-soft); font-size: 14px; margin: 6px 0 4px; letter-spacing: 1px; }
+  .stats-line .num { color: var(--dark-gold); font-weight: 700; font-size: 18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <img class="page-banner" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Chinese%20xianxia%20fan%20creations%20gallery%2C%20ink%20painting%2C%20muted%20gold&image_size=landscape_4_3" alt="读者二创图卷" data-parallax="0.3">
+  <h2 class="page-title">读者二创</h2>
+  <p class="page-sub">同人画作 · 同人小说 · COS · 视频剪辑 · 表情包</p>
+  <p class="disclaimer text-center">数据量过大，整理可能有误</p>
+  <p class="stats-line">共收录 <span class="num" id="total-num">-</span> 条</p>
+
+  <div class="board-grid" id="grid"></div>
+
+  <div class="card mt-lg">
+    <h3>留言</h3>
+    <div class="form-group"><label>昵称</label><input class="input" id="c-nick"></div>
+    <div class="form-group"><label>留言</label><textarea class="input" id="c-content"></textarea></div>
+    <div class="form-msg hidden" id="c-msg"></div>
+    <button class="btn" onclick="FR_submitComment({type:'short',board:'creations',nicknameId:'c-nick',contentId:'c-content',msgId:'c-msg',listId:'c-list'})">发表短评</button>
+    <h4 class="mt">最新留言</h4>
+    <div class="comment-list" id="c-list"></div>
+  </div>
+</div>
+
+<script src="/assets/js/common.js"></script>
+<script src="/assets/js/comments.js"></script>
+<script>
+  function escapeHtml(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]; }); }
+  fetch("/data/creations.json").then(function(r){return r.json();}).then(function(data){
+    document.getElementById("total-num").textContent = (data.meta && data.meta.total) || (data.items||[]).length;
+    var g = document.getElementById("grid");
+  g.innerHTML = (data.items||[]).map(function(c){
+    return '<div class="card board-item" style="text-align:left">'+
+      '<h3>'+escapeHtml(c.name||'')+'</h3>'+
+      '<div class="meta"><span class="tag">'+escapeHtml(c.type||'')+'</span></div>'+
+      '<div class="meta">'+escapeHtml('作者：')+escapeHtml(c.author||'-')+'</div>'+      '<p class="desc">'+escapeHtml(c.desc||'')+'</p></div>';
+  }).join("");
+  });
+  FR_loadComments("creations", "c-list");
+</script>
+</body>
+</html>

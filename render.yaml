@@ -1,0 +1,69 @@
+# Render Blueprint - 凡人修仙传粉丝网站
+# 语法参考: https://render.com/docs/blueprint-spec
+# 提交到 GitHub 后，在 Render 控制台 New → Blueprint 选择本仓库即可自动创建以下 4 个服务。
+
+services:
+  # 1. Web Service - 主站（Node.js + Express，监听 3000 端口）
+  - type: web
+    name: fanrenxiuxianzhuan
+    runtime: node
+    plan: free
+    region: singapore
+    branch: main
+    rootDir: .
+    buildCommand: npm install
+    startCommand: node server/app.js
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: fanren-db
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: DEV_PASSWORD
+        value: HU123456789
+
+  # 2. PostgreSQL 数据库（免费层）
+  - type: postgres
+    name: fanren-db
+    plan: free
+    region: singapore
+    ipAllowList: []   # 允许所有 IP 连接（免费层默认）
+
+  # 3. Cron Job - B站数据爬虫（每小时整点执行）
+  - type: cron
+    name: fanren-bilibili-cron
+    runtime: python
+    plan: free
+    region: singapore
+    schedule: "0 * * * *"
+    command: python crawler/bilibili.py
+    buildCommand: pip install requests
+    envVars:
+      - key: APP_URL
+        fromService:
+          type: web
+          name: fanrenxiuxianzhuan
+          property: url
+      - key: DEV_PASSWORD
+        value: HU123456789
+
+  # 4. Cron Job - 垃圾评论屏蔽（每日 03:00 执行）
+  - type: cron
+    name: fanren-spam-cron
+    runtime: python
+    plan: free
+    region: singapore
+    schedule: "0 3 * * *"
+    command: python crawler/spam_filter.py
+    buildCommand: pip install requests
+    envVars:
+      - key: APP_URL
+        fromService:
+          type: web
+          name: fanrenxiuxianzhuan
+          property: url
+      - key: DEV_PASSWORD
+        value: HU123456789

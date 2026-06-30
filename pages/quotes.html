@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>名场面语录 - 凡人修仙传</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+  .stats-line { text-align: center; color: var(--ink-soft); font-size: 14px; margin: 6px 0 4px; letter-spacing: 1px; }
+  .stats-line .num { color: var(--dark-gold); font-weight: 700; font-size: 18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <img class="page-banner" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Chinese%20xianxia%20famous%20quotes%20scene%2C%20ink%20calligraphy%20on%20scroll%2C%20muted%20gold&image_size=landscape_4_3" alt="名场面语录图卷" data-parallax="0.3">
+  <h2 class="page-title">名场面语录</h2>
+  <p class="page-sub">经典语录 · 名场面台词</p>
+  <p class="disclaimer text-center">数据量过大，整理可能有误</p>
+  <p class="stats-line">共收录 <span class="num" id="total-num">-</span> 条</p>
+
+  <div class="board-grid tx-paper" id="grid" style="padding:22px;border:1px solid var(--line-soft)"></div>
+
+  <div class="card mt-lg">
+    <h3>留言</h3>
+    <div class="form-group"><label>昵称</label><input class="input" id="q-nick"></div>
+    <div class="form-group"><label>留言</label><textarea class="input" id="q-content"></textarea></div>
+    <div class="form-msg hidden" id="q-msg"></div>
+    <button class="btn" onclick="FR_submitComment({type:'short',board:'quotes',nicknameId:'q-nick',contentId:'q-content',msgId:'q-msg',listId:'q-list'})">发表短评</button>
+    <h4 class="mt">最新留言</h4>
+    <div class="comment-list" id="q-list"></div>
+  </div>
+</div>
+
+<script src="/assets/js/common.js"></script>
+<script src="/assets/js/comments.js"></script>
+<script>
+  function escapeHtml(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]; }); }
+  fetch("/data/quotes.json").then(function(r){return r.json();}).then(function(data){
+    document.getElementById("total-num").textContent = (data.meta && data.meta.total) || (data.items||[]).length;
+    var g = document.getElementById("grid");
+  g.innerHTML = (data.items||[]).map(function(c){
+    return '<div class="card board-item" style="text-align:left">'+
+      '<h3>「'+escapeHtml(c.quote||'')+'」</h3>'+
+      '<div class="meta"><span class="tag">—— '+escapeHtml(c.speaker||'')+'</span></div>'+
+      '<div class="meta">'+escapeHtml('场景：')+escapeHtml(c.scene||'-')+'</div>'+      '<p class="desc">'+escapeHtml(c.desc||'')+'</p></div>';
+  }).join("");
+  });
+  FR_loadComments("quotes", "q-list");
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>音乐配音 - 凡人修仙传</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+  .stats-line { text-align: center; color: var(--ink-soft); font-size: 14px; margin: 6px 0 4px; letter-spacing: 1px; }
+  .stats-line .num { color: var(--dark-gold); font-weight: 700; font-size: 18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <img class="page-banner" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Chinese%20ancient%20guqin%20zither%20music%20scene%2C%20cultivator%20playing%20instrument%20on%20misty%20mountain%2C%20ink%20painting&image_size=landscape_4_3" alt="古琴仙乐场景" data-parallax="0.3">
+  <h2 class="page-title">音乐配音</h2>
+  <p class="page-sub">配乐合集 · 主题曲 · 角色曲 · 声优阵容 · 附相关链接</p>
+  <p class="disclaimer text-center">数据量过大，整理可能有误</p>
+  <p class="stats-line">共收录 <span class="num" id="total-num">-</span> 条音乐配音</p>
+
+  <div class="board-grid tx-cloth" id="grid" style="padding:22px;border:1px solid var(--line-soft)"></div>
+
+  <div class="card mt-lg">
+    <h3>留言</h3>
+    <div class="form-group"><label>昵称</label><input class="input" id="m-nick"></div>
+    <div class="form-group"><label>留言</label><textarea class="input" id="m-content"></textarea></div>
+    <div class="form-msg hidden" id="m-msg"></div>
+    <button class="btn" onclick="FR_submitComment({type:'short',board:'music',nicknameId:'m-nick',contentId:'m-content',msgId:'m-msg',listId:'m-list'})">发表短评</button>
+    <h4 class="mt">最新留言</h4>
+    <div class="comment-list" id="m-list"></div>
+  </div>
+</div>
+
+<script src="/assets/js/common.js"></script>
+<script src="/assets/js/comments.js"></script>
+<script>
+  fetch("/data/music.json").then(function(r){return r.json();}).then(function(data){
+    document.getElementById("total-num").textContent = (data.meta && data.meta.total) || (data.items||[]).length;
+    var g = document.getElementById("grid");
+    g.innerHTML = (data.items||[]).map(function(c){
+      var link = c.link ? '<p class="meta"><a href="'+esc(c.link)+'" target="_blank" rel="noopener">前往收听/查看 →</a></p>' : '';
+      return '<div class="card board-item" style="text-align:left">'+
+        '<h3>'+esc(c.name)+'</h3>'+
+        '<div class="meta"><span class="tag">'+esc(c.type||'')+'</span></div>'+
+        '<div class="meta">艺术家：'+esc(c.artist||'-')+'</div>'+
+        '<div class="meta">时长：'+esc(c.duration||'-')+'</div>'+
+        '<p class="desc">'+esc(c.desc||'')+'</p>'+
+        link +
+        '</div>';
+    }).join("");
+  });
+  FR_loadComments("music", "m-list");
+  function esc(s){ return (s||"").replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+</script>
+</body>
+</html>

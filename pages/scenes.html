@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>场景情节 - 凡人修仙传</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+  .stats-line { text-align: center; color: var(--ink-soft); font-size: 14px; margin: 6px 0 4px; letter-spacing: 1px; }
+  .stats-line .num { color: var(--dark-gold); font-weight: 700; font-size: 18px; }
+</style>
+</head>
+<body>
+<div class="wrap" style="position:relative;isolation:isolate">
+  <img class="page-banner" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Chinese%20xianxia%20dramatic%20scene%2C%20misty%20mountains%20blood%20forbidden%20ground%20ancient%20palace%2C%20atmospheric%20ink%20painting%2C%20muted%20teal%20bronze%20tones&image_size=landscape_4_3" alt="修仙场景画卷" data-parallax="0.3">
+  <div class="fog-layer"></div>
+  <h2 class="page-title">场景情节</h2>
+  <p class="page-sub">每场每情节具体详介 · 按故事推进顺序整理</p>
+  <p class="disclaimer text-center">数据量过大，整理可能有误</p>
+  <p class="stats-line">共收录 <span class="num" id="total-num">-</span> 个场景情节</p>
+
+  <div class="board-grid tx-stone" id="grid" style="padding:22px;border:1px solid var(--line-soft)"></div>
+
+  <div class="card mt-lg">
+    <h3>留言</h3>
+    <div class="form-group"><label>昵称</label><input class="input" id="s-nick"></div>
+    <div class="form-group"><label>留言</label><textarea class="input" id="s-content"></textarea></div>
+    <div class="form-msg hidden" id="s-msg"></div>
+    <button class="btn" onclick="FR_submitComment({type:'short',board:'scenes',nicknameId:'s-nick',contentId:'s-content',msgId:'s-msg',listId:'s-list'})">发表短评</button>
+    <h4 class="mt">最新留言</h4>
+    <div class="comment-list" id="s-list"></div>
+  </div>
+</div>
+
+<script src="/assets/js/common.js"></script>
+<script src="/assets/js/comments.js"></script>
+<script>
+  fetch("/data/scenes.json").then(function(r){return r.json();}).then(function(data){
+    document.getElementById("total-num").textContent = (data.meta && data.meta.total) || (data.items||[]).length;
+    var g = document.getElementById("grid");
+    g.innerHTML = (data.items||[]).map(function(c){
+      return '<div class="card board-item" style="text-align:left">'+
+        '<h3>'+esc(c.name)+'</h3>'+
+        '<div class="meta"><span class="tag">'+esc(c.arc||'')+'</span></div>'+
+        '<div class="meta">地点：'+esc(c.location||'-')+'</div>'+
+        '<div class="meta">人物：'+esc(c.characters||'-')+'</div>'+
+        '<p class="desc">'+esc(c.desc||'')+'</p></div>';
+    }).join("");
+  });
+  FR_loadComments("scenes", "s-list");
+  function esc(s){ return (s||"").replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+</script>
+</body>
+</html>

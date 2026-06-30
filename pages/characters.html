@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>人物百科 - 凡人修仙传</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+  .char-card { cursor: pointer; }
+  .char-card .desc { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .char-card.open .desc { display: block; -webkit-line-clamp: unset; }
+  .char-card .toggle { font-size: 12px; color: var(--anjin); margin-top: 6px; letter-spacing: .08em; }
+  .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 14px 0; }
+  .filter-bar .input { flex: 1; min-width: 200px; }
+  .filter-bar select {
+    padding: 10px 12px; border: 1px solid var(--anjin); border-radius: var(--radius-sm);
+    background: var(--bg-input); color: var(--text-main); font-family: var(--serif); font-size: 14px; letter-spacing: .05em;
+  }
+  .filter-bar select:focus { outline: none; border-color: var(--jinbian); }
+  .stats-line { text-align: center; color: var(--text-sub); font-size: 14px; margin: 6px 0 4px; letter-spacing: .08em; }
+  .stats-line .num { color: var(--text-title); font-weight: 700; font-size: 18px; font-family: var(--serif-en); }
+  .pager { text-align: center; margin: 20px 0; }
+  .pager button { margin: 0 4px; }
+  .pager .cur { background: var(--anjin); color: var(--xuanqing); border-color: var(--jinbian); }
+
+  /* banner 容器与薄雾 */
+  .banner-wrap { position: relative; overflow: hidden; border: 1px solid var(--anjin); margin-bottom: 22px; }
+  .banner-wrap .page-banner { margin-bottom: 0; border: 0; display: block; }
+  .banner-wrap .fog-layer { opacity: .7; }
+
+  /* 人物卡片：棉麻织纹 + 暗金细线（覆盖 .card/.board-item 背景） */
+  .char-card {
+    background-color: #3a352d;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, rgba(255,255,255,.04) 1px 2px, transparent 2px 4px),
+      repeating-linear-gradient(90deg, rgba(0,0,0,.18) 0 1px, rgba(255,255,255,.04) 1px 2px, transparent 2px 4px),
+      radial-gradient(circle at 50% 40%, rgba(169,140,90,.10), transparent 60%),
+      var(--noise-fine);
+    background-blend-mode: multiply, multiply, soft-light, overlay;
+    background-size: auto, auto, auto, 120px 120px;
+  }
+  .char-card:hover {
+    border-color: var(--jinbian);
+    background-color: #423a2f;
+    box-shadow: 0 0 0 1px var(--line-strong) inset;
+  }
+
+  /* 介绍面板：竹简卷轴式（宣纸 + 左侧暗金竖线） */
+  .scroll-panel {
+    background-color: #e7e1d2;
+    background-image:
+      radial-gradient(circle at 16% 24%, rgba(60,50,40,.22) 0 2px, transparent 3px),
+      radial-gradient(circle at 72% 18%, rgba(60,50,40,.18) 0 2px, transparent 3px),
+      radial-gradient(circle at 44% 62%, rgba(60,50,40,.20) 0 2px, transparent 3px),
+      radial-gradient(circle at 86% 78%, rgba(60,50,40,.16) 0 2px, transparent 3px),
+      radial-gradient(circle at 28% 86%, rgba(60,50,40,.18) 0 2px, transparent 3px),
+      linear-gradient(180deg, rgba(231,225,210,.97), rgba(218,210,192,.97)),
+      var(--noise-fine);
+    background-size: auto, auto, auto, auto, auto, auto, 120px 120px;
+    color: #2e2b26;
+    border-left: 4px solid var(--anjin);
+    position: relative;
+  }
+  .scroll-panel h3 { color: #6e4a1c; border-bottom: 1px solid rgba(169,140,90,.45); padding-bottom: 8px; }
+  .scroll-panel .muted { color: #534c40; }
+  .scroll-panel ul.muted { padding-left: 20px; }
+  .scroll-panel ul.muted li { color: #3a342a; line-height: 2.0; margin: 5px 0; }
+  .scroll-panel::after {
+    content: ""; position: absolute; left: 14px; top: 20px; bottom: 20px; width: 1px;
+    background: rgba(169,140,90,.5);
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="banner-wrap" data-parallax="0.10">
+    <img class="page-banner" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Chinese%20xianxia%20immortal%20sect%20scenery%2C%20misty%20distant%20mountains%2C%20bamboo%20forest%2C%20cave%20dwelling%2C%20ancient%20sect%20pavilion%2C%20ink%20wash%20painting%2C%20muted%20teal%20bronze%20tones%2C%20atmospheric&image_size=landscape_4_3" alt="远山竹林洞府">
+    <div class="fog-layer"></div>
+  </div>
+  <h2 class="page-title">人物百科</h2>
+  <p class="page-sub">数百位修士 · 涵盖七玄门、黄枫谷、掩月宗、落云宗、乱星海、灵界各方势力</p>
+  <p class="disclaimer text-center">数据量过大，整理可能有误</p>
+  <p class="stats-line">共收录 <span class="num" id="total-num">-</span> 位人物 · 当前显示 <span class="num" id="show-num">-</span> 位</p>
+
+  <div class="filter-bar">
+    <input class="input" id="search" placeholder="搜索人物名号 / 称号 / 别名…">
+    <select id="filter-realm">
+      <option value="">全部境界</option>
+    </select>
+    <select id="filter-appearance">
+      <option value="">全部出处</option>
+      <option value="人界篇">人界篇</option>
+      <option value="灵界篇">灵界篇</option>
+      <option value="传说">传说</option>
+    </select>
+    <button class="btn" onclick="applyFilter()">筛选</button>
+    <button class="btn ghost" onclick="resetFilter()">重置</button>
+  </div>
+
+  <div class="board-grid" id="char-grid"></div>
+  <div class="pager" id="pager"></div>
+
+  <div class="card mt-lg scroll-panel" data-parallax="0.08">
+    <h3>人物关系修正说明</h3>
+    <p class="muted">本站据修正后设定呈现以下关系：</p>
+    <ul class="muted">
+      <li>陈巧倩：仅为韩立师姐</li>
+      <li>紫菱：韩立妻子（非合欢宗圣女）</li>
+      <li>南宫婉：韩立正妻</li>
+      <li>梅凝：路人</li>
+      <li>文思月：朋友</li>
+      <li>许倾城：仅灵界篇保留</li>
+    </ul>
+  </div>
+
+  <div class="card mt-lg">
+    <h3>留言</h3>
+    <div class="form-group"><label>昵称</label><input class="input" id="c-nick"></div>
+    <div class="form-group"><label>留言</label><textarea class="input" id="c-content"></textarea></div>
+    <div class="form-msg hidden" id="c-msg"></div>
+    <button class="btn" onclick="FR_submitComment({type:'short',board:'characters',nicknameId:'c-nick',contentId:'c-content',msgId:'c-msg',listId:'c-list'})">发表短评</button>
+    <h4 class="mt">最新留言</h4>
+    <div class="comment-list" id="c-list"></div>
+  </div>
+</div>
+
+<script src="/assets/js/common.js"></script>
+<script src="/assets/js/comments.js"></script>
+<script>
+  var allChars = [];
+  var filtered = [];
+  var PAGE_SIZE = 60;
+  var curPage = 1;
+
+  function esc(s){ return (s||"").replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+
+  fetch("/data/characters.json").then(function(r){return r.json();}).then(function(data){
+    allChars = data.items || [];
+    document.getElementById("total-num").textContent = (data.meta && data.meta.total) || allChars.length;
+    // 填充境界筛选
+    var realms = {};
+    allChars.forEach(function(c){ if(c.realm) realms[c.realm]=1; });
+    var sel = document.getElementById("filter-realm");
+    Object.keys(realms).sort().forEach(function(r){
+      var o=document.createElement("option"); o.value=r; o.textContent=r; sel.appendChild(o);
+    });
+    applyFilter();
+  });
+  FR_loadComments("characters", "c-list");
+
+  function applyFilter(){
+    var kw = document.getElementById("search").value.trim().toLowerCase();
+    var realm = document.getElementById("filter-realm").value;
+    var app = document.getElementById("filter-appearance").value;
+    filtered = allChars.filter(function(c){
+      var hay = [c.name,c.title,(c.alias||[]).join(","),c.relations,c.desc,c.realm,c.appearances].join(" ").toLowerCase();
+      if(kw && hay.indexOf(kw)<0) return false;
+      if(realm && c.realm !== realm) return false;
+      if(app && !( (c.appearances||"").indexOf(app)>=0 )) return false;
+      return true;
+    });
+    curPage = 1;
+    renderPage();
+  }
+
+  function resetFilter(){
+    document.getElementById("search").value="";
+    document.getElementById("filter-realm").value="";
+    document.getElementById("filter-appearance").value="";
+    applyFilter();
+  }
+
+  function renderPage(){
+    document.getElementById("show-num").textContent = filtered.length;
+    var g = document.getElementById("char-grid");
+    var start = (curPage-1)*PAGE_SIZE;
+    var pageItems = filtered.slice(start, start+PAGE_SIZE);
+    if(!filtered.length){ g.innerHTML = '<p class="muted text-center" style="grid-column:1/-1">暂无数据</p>'; document.getElementById("pager").innerHTML=""; return; }
+    g.innerHTML = pageItems.map(function(c, i){
+      var tags = (c.alias||[]).map(function(a){return '<span class="tag">'+esc(a)+'</span>';}).join("");
+      var idx = start + i;
+      return '<div class="card board-item char-card" style="text-align:left" onclick="toggleCard('+idx+')">'+
+        '<h3>'+esc(c.name)+'</h3>'+
+        '<div class="meta"><span class="tag">'+esc(c.title||'')+'</span>'+(c.appearances_count!=null?'<span class="tag">出场 '+c.appearances_count+'</span>':'')+'</div>'+
+        (tags?'<div class="meta">'+tags+'</div>':'')+
+        '<div class="meta">境界：'+esc(c.realm||'-')+'</div>'+
+        '<div class="meta">关系：'+esc(c.relations||'-')+'</div>'+
+        '<div class="meta">出场：'+esc(c.appearances||'-')+'</div>'+
+        '<p class="desc">'+esc(c.desc||'')+'</p>'+
+        '<div class="toggle">点击展开/收起</div>'+
+        '</div>';
+    }).join("");
+    renderPager();
+  }
+
+  function renderPager(){
+    var pages = Math.ceil(filtered.length / PAGE_SIZE);
+    var p = document.getElementById("pager");
+    if(pages<=1){ p.innerHTML=""; return; }
+    var html = "";
+    html += '<button class="btn sm" onclick="goPage('+(curPage-1)+')" '+(curPage<=1?'disabled':'')+'>上一页</button>';
+    // 显示页码（最多显示 9 个）
+    var from = Math.max(1, curPage-4), to = Math.min(pages, from+8);
+    for(var i=from;i<=to;i++){
+      html += '<button class="btn sm '+(i===curPage?'cur':'')+'" onclick="goPage('+i+')">'+i+'</button>';
+    }
+    html += '<button class="btn sm" onclick="goPage('+(curPage+1)+')" '+(curPage>=pages?'disabled':'')+'>下一页</button>';
+    html += '<span class="muted" style="margin-left:8px">共 '+pages+' 页</span>';
+    p.innerHTML = html;
+  }
+
+  function goPage(p){
+    var pages = Math.ceil(filtered.length / PAGE_SIZE);
+    if(p<1||p>pages) return;
+    curPage = p;
+    renderPage();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function toggleCard(idx){
+    // 找到对应卡片（页内索引）
+    var start = (curPage-1)*PAGE_SIZE;
+    var localIdx = idx - start;
+    var cards = document.querySelectorAll("#char-grid .char-card");
+    if(cards[localIdx]) cards[localIdx].classList.toggle("open");
+  }
+
+  document.getElementById("search").addEventListener("input", function(){
+    // 输入即筛选（轻量）
+    clearTimeout(window._frt); window._frt = setTimeout(applyFilter, 250);
+  });
+  document.getElementById("filter-realm").addEventListener("change", applyFilter);
+  document.getElementById("filter-appearance").addEventListener("change", applyFilter);
+</script>
+</body>
+</html>

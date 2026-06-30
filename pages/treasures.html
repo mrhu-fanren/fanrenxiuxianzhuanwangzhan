@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>法宝图鉴 - 凡人修仙传</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+  .treasure-card { cursor: pointer; }
+  .treasure-card .desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .treasure-card.open .desc { display: block; -webkit-line-clamp: unset; }
+  .treasure-card .toggle { font-size: 12px; color: var(--anjin); margin-top: 6px; letter-spacing: .08em; }
+  .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 14px 0; }
+  .filter-bar .input { flex: 1; min-width: 200px; }
+  .filter-bar select {
+    padding: 10px 12px; border: 1px solid var(--anjin); border-radius: var(--radius-sm);
+    background: var(--bg-input); color: var(--text-main); font-family: var(--serif); font-size: 14px; letter-spacing: .05em;
+  }
+  .filter-bar select:focus { outline: none; border-color: var(--jinbian); }
+  .stats-line { text-align: center; color: var(--text-sub); font-size: 14px; margin: 6px 0 4px; letter-spacing: .08em; }
+  .stats-line .num { color: var(--text-title); font-weight: 700; font-size: 18px; font-family: var(--serif-en); }
+  .pager { text-align: center; margin: 20px 0; }
+  .pager button { margin: 0 4px; }
+  .pager .cur { background: var(--anjin); color: var(--xuanqing); border-color: var(--jinbian); }
+
+  /* banner 容器：薄雾 + 烛火漫射光 */
+  .banner-wrap { position: relative; overflow: hidden; border: 1px solid var(--anjin); margin-bottom: 22px; }
+  .banner-wrap .page-banner { margin-bottom: 0; border: 0; display: block; }
+  .banner-wrap .fog-layer { opacity: .55; }
+  .banner-wrap .dim-light { opacity: .9; }
+
+  /* 法宝卡：青铜氧化金属纹理（覆盖 .card/.board-item 背景） */
+  .treasure-card {
+    background-color: #4a3f2c;
+    background-image:
+      linear-gradient(125deg, rgba(255,240,200,.10) 0%, transparent 22%, transparent 68%, rgba(0,0,0,.28) 100%),
+      radial-gradient(circle at 24% 30%, rgba(74,92,70,.42), transparent 24%),
+      radial-gradient(circle at 72% 64%, rgba(110,58,58,.34), transparent 22%),
+      radial-gradient(circle at 50% 88%, rgba(58,70,60,.38), transparent 26%),
+      repeating-linear-gradient(45deg, rgba(0,0,0,.05) 0 1px, transparent 1px 5px),
+      var(--noise-gray);
+    background-blend-mode: normal, normal, normal, normal, soft-light, overlay;
+    background-size: auto, auto, auto, auto, auto, 180px 180px;
+  }
+  .treasure-card:hover {
+    border-color: var(--jinbian);
+    background-color: #54482f;
+    box-shadow: 0 0 0 1px var(--line-strong) inset;
+  }
+  .treasure-card h3 { text-shadow: 0 1px 4px rgba(0,0,0,.55); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="banner-wrap" data-parallax="0.10">
+    <img class="page-banner" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ancient%20Chinese%20magical%20treasures%20on%20stone%20altar%20and%20bronze%20shelf%2C%20flying%20sword%20glowing%20cauldron%2C%20mystical%20artifacts%2C%20dim%20candle%20light%2C%20ink%20wash%20painting%2C%20bronze%20gold%20tones&image_size=landscape_4_3" alt="石台木案青铜架法宝">
+    <div class="fog-layer"></div>
+    <div class="dim-light"></div>
+  </div>
+  <h2 class="page-title">法宝图鉴</h2>
+  <p class="page-sub">千万法器 · 核心法宝手写详介，其余按原著风格词库组合生成</p>
+  <p class="disclaimer text-center">数据量过大，整理可能有误</p>
+  <p class="stats-line">共收录 <span class="num" id="total-num">-</span> 件法宝 · 当前显示 <span class="num" id="show-num">-</span> 件</p>
+
+  <div class="filter-bar">
+    <input class="input" id="search" placeholder="搜索法宝名称 / 类型 / 效果…">
+    <select id="filter-grade">
+      <option value="">全部品级</option>
+    </select>
+    <select id="filter-type">
+      <option value="">全部类型</option>
+    </select>
+    <button class="btn" onclick="applyFilter()">筛选</button>
+    <button class="btn ghost" onclick="resetFilter()">重置</button>
+  </div>
+
+  <div class="board-grid" id="grid"></div>
+  <div class="pager" id="pager"></div>
+
+  <div class="card mt-lg">
+    <h3>留言</h3>
+    <div class="form-group"><label>昵称</label><input class="input" id="t-nick"></div>
+    <div class="form-group"><label>留言</label><textarea class="input" id="t-content"></textarea></div>
+    <div class="form-msg hidden" id="t-msg"></div>
+    <button class="btn" onclick="FR_submitComment({type:'short',board:'treasures',nicknameId:'t-nick',contentId:'t-content',msgId:'t-msg',listId:'t-list'})">发表短评</button>
+    <h4 class="mt">最新留言</h4>
+    <div class="comment-list" id="t-list"></div>
+  </div>
+</div>
+
+<script src="/assets/js/common.js"></script>
+<script src="/assets/js/comments.js"></script>
+<script>
+  var allItems = [];
+  var filtered = [];
+  var PAGE_SIZE = 80;
+  var curPage = 1;
+
+  function esc(s){ return (s||"").replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+
+  fetch("/data/treasures.json").then(function(r){return r.json();}).then(function(data){
+    allItems = data.items || [];
+    document.getElementById("total-num").textContent = (data.meta && data.meta.total) || allItems.length;
+    // 填充筛选
+    var grades = {}, types = {};
+    allItems.forEach(function(t){ if(t.grade) grades[t.grade]=1; if(t.type) types[t.type]=1; });
+    var gs = document.getElementById("filter-grade");
+    Object.keys(grades).sort().forEach(function(g){ var o=document.createElement("option"); o.value=g; o.textContent=g; gs.appendChild(o); });
+    var ts = document.getElementById("filter-type");
+    Object.keys(types).sort().forEach(function(t){ var o=document.createElement("option"); o.value=t; o.textContent=t; ts.appendChild(o); });
+    applyFilter();
+  });
+  FR_loadComments("treasures", "t-list");
+
+  function applyFilter(){
+    var kw = document.getElementById("search").value.trim().toLowerCase();
+    var grade = document.getElementById("filter-grade").value;
+    var type = document.getElementById("filter-type").value;
+    filtered = allItems.filter(function(t){
+      var hay = [t.name,t.type,t.grade,t.owner,t.origin,t.effect,t.desc].join(" ").toLowerCase();
+      if(kw && hay.indexOf(kw)<0) return false;
+      if(grade && t.grade !== grade) return false;
+      if(type && t.type !== type) return false;
+      return true;
+    });
+    curPage = 1;
+    renderPage();
+  }
+
+  function resetFilter(){
+    document.getElementById("search").value="";
+    document.getElementById("filter-grade").value="";
+    document.getElementById("filter-type").value="";
+    applyFilter();
+  }
+
+  function renderPage(){
+    document.getElementById("show-num").textContent = filtered.length;
+    var g = document.getElementById("grid");
+    var start = (curPage-1)*PAGE_SIZE;
+    var pageItems = filtered.slice(start, start+PAGE_SIZE);
+    if(!filtered.length){ g.innerHTML = '<p class="muted text-center" style="grid-column:1/-1">暂无数据</p>'; document.getElementById("pager").innerHTML=""; return; }
+    g.innerHTML = pageItems.map(function(t, i){
+      var idx = start + i;
+      return '<div class="card board-item treasure-card" style="text-align:left" onclick="toggleCard('+idx+')">'+
+        '<h3>'+esc(t.name)+'</h3>'+
+        '<div class="meta"><span class="tag">'+esc(t.grade||'')+'</span><span class="tag">'+esc(t.type||'')+'</span></div>'+
+        '<div class="meta">持有者：'+esc(t.owner||'-')+'</div>'+
+        '<div class="meta">来源：'+esc(t.origin||'-')+'</div>'+
+        '<div class="meta">效果：'+esc(t.effect||'-')+'</div>'+
+        '<p class="desc">'+esc(t.desc||'')+'</p>'+
+        '<div class="toggle">点击展开/收起</div>'+
+        '</div>';
+    }).join("");
+    renderPager();
+  }
+
+  function renderPager(){
+    var pages = Math.ceil(filtered.length / PAGE_SIZE);
+    var p = document.getElementById("pager");
+    if(pages<=1){ p.innerHTML=""; return; }
+    var html = "";
+    html += '<button class="btn sm" onclick="goPage('+(curPage-1)+')" '+(curPage<=1?'disabled':'')+'>上一页</button>';
+    var from = Math.max(1, curPage-4), to = Math.min(pages, from+8);
+    for(var i=from;i<=to;i++){
+      html += '<button class="btn sm '+(i===curPage?'cur':'')+'" onclick="goPage('+i+')">'+i+'</button>';
+    }
+    html += '<button class="btn sm" onclick="goPage('+(curPage+1)+')" '+(curPage>=pages?'disabled':'')+'>下一页</button>';
+    html += '<span class="muted" style="margin-left:8px">共 '+pages+' 页</span>';
+    p.innerHTML = html;
+  }
+
+  function goPage(p){
+    var pages = Math.ceil(filtered.length / PAGE_SIZE);
+    if(p<1||p>pages) return;
+    curPage = p;
+    renderPage();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function toggleCard(idx){
+    var start = (curPage-1)*PAGE_SIZE;
+    var localIdx = idx - start;
+    var cards = document.querySelectorAll("#grid .treasure-card");
+    if(cards[localIdx]) cards[localIdx].classList.toggle("open");
+  }
+
+  document.getElementById("search").addEventListener("input", function(){
+    clearTimeout(window._frt2); window._frt2 = setTimeout(applyFilter, 250);
+  });
+  document.getElementById("filter-grade").addEventListener("change", applyFilter);
+  document.getElementById("filter-type").addEventListener("change", applyFilter);
+</script>
+</body>
+</html>

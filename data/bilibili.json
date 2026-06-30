@@ -1,0 +1,25 @@
+{
+  "meta": {
+    "title": "B站《凡人修仙传》动画数据",
+    "disclaimer": "数据量过大，整理可能有误",
+    "source": "bilibili",
+    "note": "占位快照。crawler/bilibili.py 将每小时抓取真实数据写入 SQLite。"
+  },
+  "snapshot": {
+    "title": "凡人修仙传",
+    "danmaku": 0,
+    "favorite": 0,
+    "like": 0,
+    "share": 0,
+    "coin": 0,
+    "current_online": 0,
+    "max_online": 0,
+    "total_view": 0,
+    "score": 0,
+    "follow": 0,
+    "comment": 0,
+    "repost": 0,
+    "episodes": 0
+  },
+  "ts": null
+}

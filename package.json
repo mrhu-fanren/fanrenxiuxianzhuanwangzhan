@@ -1,0 +1,20 @@
+{
+  "name": "fanren-cultivation-site",
+  "version": "1.0.0",
+  "description": "凡人修仙传粉丝网站 - 多页面粉丝站点（Node.js + Express + SQLite + 原生前端）",
+  "main": "server/app.js",
+  "scripts": {
+    "start": "node server/app.js",
+    "start:prod": "node server/app.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.11.1",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "pg": "^8.11.5"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>B站数据 - 凡人修仙传</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <img class="page-banner" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Chinese%20xianxia%20animation%20data%20dashboard%2C%20flying%20swords%20digital%20stats%2C%20dark%20gold%20green%20theme%20ink%20style&image_size=landscape_4_3" alt="修仙动画数据看板" data-parallax="0.3">
+  <h2 class="page-title">B站数据</h2>
+  <p class="page-sub">《凡人修仙传》动画真实数据 · 每小时抓取</p>
+  <p class="disclaimer text-center">数据量过大，整理可能有误</p>
+
+  <div class="card">
+    <h3>最新快照</h3>
+    <p class="muted" id="bili-ts">加载中…</p>
+    <table class="data-table" id="bili-table">
+      <thead><tr><th>指标</th><th>数值</th></tr></thead>
+      <tbody id="bili-body"></tbody>
+    </table>
+  </div>
+
+  <div class="card mt-lg">
+    <h3>留言</h3>
+    <div class="form-group"><label>昵称</label><input class="input" id="bl-nick"></div>
+    <div class="form-group"><label>留言</label><textarea class="input" id="bl-content"></textarea></div>
+    <div class="form-msg hidden" id="bl-msg"></div>
+    <button class="btn" onclick="FR_submitComment({type:'short',board:'bilibili',nicknameId:'bl-nick',contentId:'bl-content',msgId:'bl-msg',listId:'bl-list'})">发表短评</button>
+    <h4 class="mt">最新留言</h4>
+    <div class="comment-list" id="bl-list"></div>
+  </div>
+</div>
+
+<script src="/assets/js/common.js"></script>
+<script src="/assets/js/comments.js"></script>
+<script>
+  fetch("/api/bilibili").then(function(r){return r.json();}).then(function(data){
+    var body = document.getElementById("bili-body");
+    var ts = document.getElementById("bili-ts");
+    var snap = data.snapshot && data.snapshot.snapshot ? data.snapshot.snapshot : (data.snapshot || {});
+    ts.textContent = "抓取时间：" + (data.ts || "暂无（使用占位数据）") + " · 来源：" + (data.source || "-");
+    var rows = Object.keys(snap).map(function(k){
+      return "<tr><td>"+k+"</td><td>"+snap[k]+"</td></tr>";
+    }).join("");
+    body.innerHTML = rows || '<tr><td colspan="2" class="muted text-center">暂无数据</td></tr>';
+  });
+  FR_loadComments("bilibili", "bl-list");
+</script>
+</body>
+</html>

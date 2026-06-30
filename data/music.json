@@ -1,0 +1,42 @@
+{
+  "meta": {
+    "title": "音乐配音",
+    "disclaimer": "数据量过大，整理可能有误",
+    "total": 32,
+    "note": "凡人修仙传动画配乐、主题曲、片尾曲及声优阵容整理，链接以 B 站搜索占位。"
+  },
+  "items": [
+    { "id": "m01", "name": "凡人", "type": "动画主题曲 OP", "artist": "动画主唱", "duration": "约 3:50", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+凡人+主题曲", "desc": "《凡人修仙传》动画主题曲，旋律恢弘大气，开篇即点出韩立凡人出身、逆天修仙的主题。曲调由低沉渐进至高亢，象征修士由微末崛起、步步登天的历程，是动画最具辨识度的乐曲之一。" },
+    { "id": "m02", "name": "修仙路", "type": "片尾曲 ED", "artist": "动画主唱", "duration": "约 4:10", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+修仙路+片尾曲", "desc": "动画片尾曲，曲风苍凉悠远，吟唱修仙路上的孤独与坚持。歌词道尽修士求道之艰辛、亲人离散之怅惘，与韩立一路独行的境遇相呼应，是全片情感沉淀的重要载体。" },
+    { "id": "m03", "name": "逆旅", "type": "片尾曲 ED", "artist": "动画主唱", "duration": "约 4:00", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+逆旅+片尾曲", "desc": "片尾曲之一，以「天地逆旅」为意象，抒发修仙者视光阴如客、视天地如旅的旷达与苍凉。旋律婉转低回，适合静夜聆听，与动画中多次离别、远行的场景高度契合。" },
+    { "id": "m04", "name": "青竹剑歌", "type": "原声配乐 OST", "artist": "动画配乐组", "duration": "约 2:30", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+青竹剑歌+配乐", "desc": "韩立施展青竹蜂云剑时的专属配乐，剑鸣铮铮、节奏激昂。曲中融入金属撞击与雷电音效，展现剑阵克制魔道妖物的凌厉气势，是战斗场景中最燃的配乐之一。" },
+    { "id": "m05", "name": "血色禁地", "type": "原声配乐 OST", "artist": "动画配乐组", "duration": "约 3:20", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+血色禁地+配乐", "desc": "血色禁地试炼场景配乐，旋律诡谲悬疑，渲染禁地的凶险与未知。低音弦乐与空灵人声交织，烘托韩立与南宫婉初遇时的紧张与暧昧，是早期情节的标志性配乐。" },
+    { "id": "m06", "name": "南宫婉", "type": "角色主题曲", "artist": "动画配乐组", "duration": "约 2:50", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+南宫婉+角色曲", "desc": "南宫婉的角色主题曲，曲调温婉清丽，如月光洒落。乐曲以古筝与笛子为主奏，刻画南宫婉温婉坚韧的形象，亦承载其与韩立的深情，是情感戏的重要烘托。" },
+    { "id": "m07", "name": "紫菱", "type": "角色主题曲", "artist": "动画配乐组", "duration": "约 2:40", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+紫菱+角色曲", "desc": "紫菱的角色主题曲，气质清冷空灵，如寒梅独立。乐曲以箫与琴为主，呼应紫菱清冷出尘的气质，亦暗含其与韩立患难与共的情感线，是灵界篇的重要情感配乐。" },
+    { "id": "m08", "name": "魔道来袭", "type": "原声配乐 OST", "artist": "动画配乐组", "duration": "约 2:10", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+魔道来袭+配乐", "desc": "魔道入侵场景的战斗配乐，鼓点密集、旋律压抑，渲染魔道修士的诡谲与压迫感。乐曲在正魔大战、宗门倾覆等场景多次出现，是紧张氛围的核心烘托。" },
+    { "id": "m09", "name": "虚天殿", "type": "原声配乐 OST", "artist": "动画配乐组", "duration": "约 3:00", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+虚天殿+配乐", "desc": "虚天殿探秘场景配乐，旋律神秘悠远，烘托上古遗迹的沧桑与未知。乐曲以钟磬与低吟人声营造仪式感，与虚天殿重重禁制、上古机缘的氛围高度契合。" },
+    { "id": "m10", "name": "飞升", "type": "原声配乐 OST", "artist": "动画配乐组", "duration": "约 4:20", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+飞升+配乐", "desc": "飞升场景配乐，旋律由压抑渐进至辉煌，象征修士渡劫飞升的生死考验与新生。乐曲在雷劫、破界等关键节点层层推进，是全片最具史诗感的配乐之一。" },
+    { "id": "m11", "name": "灵界", "type": "原声配乐 OST", "artist": "动画配乐组", "duration": "约 3:30", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+灵界+配乐", "desc": "灵界篇的标志性配乐，旋律宏大辽阔，展现灵界灵气浓郁、强者如云的全新天地。乐曲以管弦乐为主，烘托韩立初入灵界的震撼与新征程的开端。" },
+    { "id": "m12", "name": "噬金虫", "type": "原声配乐 OST", "artist": "动画配乐组", "duration": "约 2:00", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+噬金虫+配乐", "desc": "噬金虫登场与作战的配乐，节奏急促、音色尖锐，模仿虫群啃噬金属的窸窣声。乐曲在韩立驱使噬金虫作战时出现，极具辨识度，增添战斗的紧张感。" },
+    { "id": "m13", "name": "天庭", "type": "原声配乐 OST", "artist": "动画配乐组", "duration": "约 3:40", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+天庭+配乐", "desc": "仙界天庭的配乐，旋律庄严巍峨，烘托天庭作为仙界顶级势力的威严与压迫。乐曲以大型管弦与合唱呈现，是天庭相关场景的核心氛围配乐。" },
+    { "id": "m14", "name": "时间法则", "type": "原声配乐 OST", "artist": "动画配乐组", "duration": "约 3:10", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+时间法则+配乐", "desc": "韩立施展时间法则时的配乐，旋律空灵诡谲，仿佛时间在指尖流转。乐曲以钟表滴答声与回响人声营造时间停滞、倒流的奇异感，是仙界篇的高光配乐。" },
+    { "id": "m15", "name": "凡人心", "type": "插曲", "artist": "动画主唱", "duration": "约 4:30", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+凡人心+插曲", "desc": "动画插曲，抒发韩立虽修为通天、始终不改凡人本心的主题。旋律质朴深情，是全片精神主旨的音乐化呈现，在关键情感节点多次响起，催人泪下。" },
+    { "id": "m16", "name": "韩立 - 钱文青", "type": "声优配音", "artist": "钱文青", "duration": "主角配音", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+韩立+配音+钱文青", "desc": "韩立的配音演员钱文青，以沉稳内敛的声线塑造韩立谨慎坚毅的形象。配音精准把握韩立由少年到至尊的成长跨度，是动画成功的关键之一，广受道友好评。" },
+    { "id": "m17", "name": "南宫婉 - 杨天翔", "type": "声优配音", "artist": "杨天翔", "duration": "主角配音", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+南宫婉+配音+杨天翔", "desc": "南宫婉的配音演员杨天翔，以温婉清亮的声线塑造南宫婉温婉坚韧的形象。配音将南宫婉的柔情与坚韧拿捏到位，与韩立的情感戏份尤为动人。" },
+    { "id": "m18", "name": "紫菱 - 聂曦映", "type": "声优配音", "artist": "聂曦映", "duration": "主角配音", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+紫菱+配音+聂曦映", "desc": "紫菱的配音演员聂曦映，以清冷空灵的声线塑造紫菱出尘冷艳的形象。配音精准传达紫菱外冷内热的性格，与韩立的对手戏张力十足。" },
+    { "id": "m19", "name": "厉飞雨 - 魏超", "type": "声优配音", "artist": "魏超", "duration": "主要配音", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+厉飞雨+配音+魏超", "desc": "厉飞雨的配音演员魏超，以豪爽爽朗的声线塑造厉飞雨江湖豪侠的形象。配音将厉飞雨的重情重义与江湖气刻画得淋漓尽致，是早期情节的亮点。" },
+    { "id": "m20", "name": "墨大夫 - 汤水雨", "type": "声优配音", "artist": "汤水雨", "duration": "主要配音", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+墨大夫+配音+汤水雨", "desc": "墨大夫的配音演员汤水雨，以阴鸷深沉的声线塑造墨大夫表里不一的形象。配音将墨大夫的城府与隐秘心机层层揭开，是入门篇的关键角色配音。" },
+    { "id": "m21", "name": "李化元 - 张震", "type": "声优配音", "artist": "张震", "duration": "主要配音", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+李化元+配音+张震", "desc": "李化元的配音演员张震，以威严沉稳的声线塑造李化元宗师气度。配音将李化元对韩立的师徒情谊与宗门担当表现得淋漓尽致，殉道一幕尤为动人。" },
+    { "id": "m22", "name": "紫灵 - 季冠霖", "type": "声优配音", "artist": "季冠霖", "duration": "主要配音", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+紫灵+配音+季冠霖", "desc": "紫灵的配音演员季冠霖，以才情并茂的声线塑造紫灵聪慧灵动的形象。配音将紫灵的机敏与对韩立的复杂情感细腻呈现，是乱星海篇的重要角色配音。" },
+    { "id": "m23", "name": "魏无涯 - 宝木中阳", "type": "声优配音", "artist": "宝木中阳", "duration": "主要配音", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+魏无涯+配音+宝木中阳", "desc": "魏无涯的配音演员宝木中阳，以苍劲威严的声线塑造魏无涯魔道枭雄的形象。配音将魏无涯的野心与狠辣展现得入木三分，是正魔之战篇的核心反派配音。" },
+    { "id": "m24", "name": "呼老魔 - 图特哈蒙", "type": "声优配音", "artist": "图特哈蒙", "duration": "主要配音", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+呼老魔+配音+图特哈蒙", "desc": "呼老魔的配音演员图特哈蒙，以阴鸷诡谲的声线塑造呼老魔元婴老怪的形象。配音将老怪的老辣与城府拿捏精准，是虚天殿篇的重要角色配音。" },
+    { "id": "m25", "name": "银光 - 刘琮", "type": "声优配音", "artist": "刘琮", "duration": "主要配音", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+银光+配音+刘琮", "desc": "银光的配音演员刘琮，以沉稳厚重的声线塑造银光灵界强者的形象。配音将银光的忠诚与实力展现到位，是灵界篇韩立重要助手的代表性配音。" },
+    { "id": "m26", "name": "魔主 - 郭政建", "type": "声优配音", "artist": "郭政建", "duration": "主要配音", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+魔主+配音+郭政建", "desc": "魔主的配音演员郭政建，以苍老威严的声线塑造魔主仙界顶级强者的形象。配音将魔主的霸气与深不可测展现得淋漓尽致，是仙界篇核心反派的配音。" },
+    { "id": "m27", "name": "天狐仙子 - 邱秋", "type": "声优配音", "artist": "邱秋", "duration": "主要配音", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+天狐仙子+配音+邱秋", "desc": "天狐仙子的配音演员邱秋，以妩媚与冷艳兼具的声线塑造天狐仙子的形象。配音将天狐仙子的聪慧与神秘呈现得恰到好处，是仙界篇重要角色的配音。" },
+    { "id": "m28", "name": "片头动画音乐", "type": "片头音乐", "artist": "动画配乐组", "duration": "约 0:40", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+片头动画+音乐", "desc": "动画每集片头的标志性音乐片段，旋律凝练恢弘，以几秒钟的乐句浓缩修仙主题。这段音乐是动画的品牌符号，闻之即让人联想到韩立的修仙征程。" },
+    { "id": "m29", "name": "炼丹曲", "type": "原声配乐 OST", "artist": "动画配乐组", "duration": "约 2:20", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+炼丹+配乐", "desc": "韩立炼丹场景的配乐，旋律沉稳专注，烘托炼丹的严谨与神秘。乐曲以古琴与磬声为主，营造丹房静谧而专注的氛围，是韩立炼丹名场面的标配。" },
+    { "id": "m30", "name": "拍卖会", "type": "原声配乐 OST", "artist": "动画配乐组", "duration": "约 2:30", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+拍卖会+配乐", "desc": "修士拍卖会场景的配乐，旋律华丽而暗藏机锋，烘托拍卖会的繁华与暗流。乐曲以弦乐与钢琴交织，展现各路修士明争暗斗的紧张氛围。" },
+    { "id": "m31", "name": "离别", "type": "原声配乐 OST", "artist": "动画配乐组", "duration": "约 3:00", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+离别+配乐", "desc": "离别场景的配乐，旋律哀婉缠绵，承载韩立与亲人、师友的多次分别。乐曲以二胡与笛子为主奏，将修仙路上聚少离多的怅惘表现得催人泪下。" },
+    { "id": "m32", "name": "问道", "type": "原声配乐 OST", "artist": "动画配乐组", "duration": "约 4:00", "link": "https://search.bilibili.com/all?keyword=凡人修仙传+问道+配乐", "desc": "问道场景的配乐，旋律空灵辽远，象征修士对大道的叩问与追寻。乐曲以大型管弦与合唱呈现，是全片最具哲思意味的配乐，点明修仙即修心的主旨。" }
+  ]
+}

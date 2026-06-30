@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>宗门势力 - 凡人修仙传</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+  .stats-line { text-align: center; color: var(--ink-soft); font-size: 14px; margin: 6px 0 4px; letter-spacing: 1px; }
+  .stats-line .num { color: var(--dark-gold); font-weight: 700; font-size: 18px; }
+</style>
+</head>
+<body>
+<div class="wrap" style="position:relative;isolation:isolate">
+  <img class="page-banner" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Chinese%20ancient%20immortal%20sect%20mountain%20temple%2C%20pavilions%20in%20clouds%2C%20sect%20gate%2C%20ink%20painting%20golden%20light%2C%20muted%20tones&image_size=landscape_4_3" alt="仙门宗派殿阁" data-parallax="0.3">
+  <div class="fog-layer"></div>
+  <h2 class="page-title">宗门势力</h2>
+  <p class="page-sub">正道 · 魔道 · 灵界 · 仙界各方势力</p>
+  <p class="disclaimer text-center">数据量过大，整理可能有误</p>
+  <p class="stats-line">共收录 <span class="num" id="total-num">-</span> 条</p>
+
+  <div class="board-grid tx-wood" id="grid" style="padding:22px;border:1px solid var(--line-soft)"></div>
+
+  <div class="card mt-lg">
+    <h3>留言</h3>
+    <div class="form-group"><label>昵称</label><input class="input" id="s-nick"></div>
+    <div class="form-group"><label>留言</label><textarea class="input" id="s-content"></textarea></div>
+    <div class="form-msg hidden" id="s-msg"></div>
+    <button class="btn" onclick="FR_submitComment({type:'short',board:'sects',nicknameId:'s-nick',contentId:'s-content',msgId:'s-msg',listId:'s-list'})">发表短评</button>
+    <h4 class="mt">最新留言</h4>
+    <div class="comment-list" id="s-list"></div>
+  </div>
+</div>
+
+<script src="/assets/js/common.js"></script>
+<script src="/assets/js/comments.js"></script>
+<script>
+  function escapeHtml(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]; }); }
+  fetch("/data/sects.json").then(function(r){return r.json();}).then(function(data){
+    document.getElementById("total-num").textContent = (data.meta && data.meta.total) || (data.items||[]).length;
+    var g = document.getElementById("grid");
+  g.innerHTML = (data.items||[]).map(function(c){
+    return '<div class="card board-item" style="text-align:left">'+
+      '<h3>'+escapeHtml(c.name||'')+'</h3>'+
+      '<div class="meta"><span class="tag">'+escapeHtml(c.type||'')+'</span></div>'+
+      '<div class="meta">'+escapeHtml('掌门：')+escapeHtml(c.leader||'-')+'</div>'+
+      '<div class="meta">'+escapeHtml('所在地：')+escapeHtml(c.location||'-')+'</div>'+
+      '<div class="meta">'+escapeHtml('实力：')+escapeHtml(c.strength||'-')+'</div>'+      '<p class="desc">'+escapeHtml(c.desc||'')+'</p></div>';
+  }).join("");
+  });
+  FR_loadComments("sects", "s-list");
+</script>
+</body>
+</html>

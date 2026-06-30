@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>地理秘境 - 凡人修仙传</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+  .stats-line { text-align: center; color: var(--text-sub); font-size: 14px; margin: 6px 0 4px; letter-spacing: .08em; }
+  .stats-line .num { color: var(--text-title); font-weight: 700; font-size: 18px; font-family: var(--serif-en); }
+
+  /* banner 容器与薄雾 */
+  .banner-wrap { position: relative; overflow: hidden; border: 1px solid var(--anjin); margin-bottom: 22px; }
+  .banner-wrap .page-banner { margin-bottom: 0; border: 0; display: block; }
+  .banner-wrap .fog-layer { opacity: .6; }
+
+  /* 区域卡：宣纸卷轴质感（浅纸底 + 暗金细线 + 深色文字） */
+  #grid .board-item {
+    background-color: #e7e1d2;
+    background-image:
+      radial-gradient(circle at 16% 24%, rgba(60,50,40,.22) 0 2px, transparent 3px),
+      radial-gradient(circle at 72% 18%, rgba(60,50,40,.18) 0 2px, transparent 3px),
+      radial-gradient(circle at 44% 62%, rgba(60,50,40,.20) 0 2px, transparent 3px),
+      radial-gradient(circle at 86% 78%, rgba(60,50,40,.16) 0 2px, transparent 3px),
+      radial-gradient(circle at 28% 86%, rgba(60,50,40,.18) 0 2px, transparent 3px),
+      linear-gradient(180deg, rgba(231,225,210,.97), rgba(218,210,192,.97)),
+      var(--noise-fine);
+    background-size: auto, auto, auto, auto, auto, auto, 120px 120px;
+    color: #2e2b26;
+    border-color: var(--anjin);
+  }
+  #grid .board-item h3 { color: #6e4a1c; text-shadow: none; }
+  #grid .board-item .meta { color: #4a4438; }
+  #grid .board-item .meta .tag { color: #6e4a1c; border-color: var(--anjin); background: rgba(169,140,90,.12); }
+  #grid .board-item .desc { color: #3a352d; }
+  #grid .board-item small { color: #6e4a1c; }
+  #grid .board-item:hover { border-color: var(--jinbian); background-color: #ece6d8; box-shadow: 0 0 0 1px var(--line-strong) inset; }
+  #grid .board-item::after { color: rgba(110,74,28,.10); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="banner-wrap" data-parallax="0.10">
+    <img class="page-banner" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ancient%20Chinese%20fantasy%20world%20map%20on%20old%20scroll%2C%20star%20chart%2C%20sea%20routes%2C%20ink%20and%20bronze%2C%20muted%20tones%2C%20cartography%20style&image_size=landscape_4_3" alt="古地图卷轴星图">
+    <div class="fog-layer"></div>
+  </div>
+  <h2 class="page-title">地理秘境</h2>
+  <p class="page-sub">人界 · 灵界 · 仙界各地点秘境详介</p>
+  <p class="disclaimer text-center">数据量过大，整理可能有误</p>
+  <p class="stats-line">共收录 <span class="num" id="total-num">-</span> 条</p>
+
+  <div class="board-grid" id="grid"></div>
+
+  <div class="card mt-lg">
+    <h3>留言</h3>
+    <div class="form-group"><label>昵称</label><input class="input" id="g-nick"></div>
+    <div class="form-group"><label>留言</label><textarea class="input" id="g-content"></textarea></div>
+    <div class="form-msg hidden" id="g-msg"></div>
+    <button class="btn" onclick="FR_submitComment({type:'short',board:'geography',nicknameId:'g-nick',contentId:'g-content',msgId:'g-msg',listId:'g-list'})">发表短评</button>
+    <h4 class="mt">最新留言</h4>
+    <div class="comment-list" id="g-list"></div>
+  </div>
+</div>
+
+<script src="/assets/js/common.js"></script>
+<script src="/assets/js/comments.js"></script>
+<script>
+  function escapeHtml(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(m){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]; }); }
+  fetch("/data/geography.json").then(function(r){return r.json();}).then(function(data){
+    document.getElementById("total-num").textContent = (data.meta && data.meta.total) || (data.items||[]).length;
+    var g = document.getElementById("grid");
+  g.innerHTML = (data.items||[]).map(function(c){
+    return '<div class="card board-item" style="text-align:left">'+
+      '<h3>'+escapeHtml(c.name||'')+'</h3>'+
+      '<div class="meta"><span class="tag">'+escapeHtml(c.region||'')+'</span></div>'+
+      '<div class="meta">'+escapeHtml('类型：')+escapeHtml(c.type||'-')+'</div>'+
+      '<div class="meta">'+escapeHtml('凶险度：')+escapeHtml(c.danger||'-')+'</div>'+      '<p class="desc">'+escapeHtml(c.desc||'')+'</p></div>';
+  }).join("");
+  });
+  FR_loadComments("geography", "g-list");
+</script>
+</body>
+</html>

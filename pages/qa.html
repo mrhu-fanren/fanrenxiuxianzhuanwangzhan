@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>凡人问答 - 凡人修仙传</title>
+<link rel="stylesheet" href="/assets/css/style.css">
+<style>
+  /* 问答页面局部样式 */
+  .cat-bar { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 18px; }
+  .cat-bar .btn.sm { min-width: 60px; }
+  .qa-card { padding: 18px 22px; }
+  .qa-card h3 { margin: 0 0 6px; font-size: 18px; color: var(--ink-green-deep); }
+  .qa-opts { margin: 10px 0 6px; padding: 0; list-style: none; }
+  .qa-opt {
+    display: flex;
+    align-items: center;
+    padding: 9px 12px;
+    margin: 6px 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all .18s;
+    background: var(--paper);
+  }
+  .qa-opt:hover { border-color: var(--dark-gold); background: rgba(184,134,11,.06); }
+  .qa-opt.selected { border-color: var(--ink-green); background: rgba(26,58,42,.08); }
+  .qa-letter {
+    display: inline-block;
+    width: 24px; height: 24px;
+    line-height: 24px;
+    text-align: center;
+    border-radius: 50%;
+    background: var(--ink-green);
+    color: var(--cream-2);
+    font-size: 13px;
+    margin-right: 10px;
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+  .qa-text { flex: 1; }
+  .qa-card.revealed .qa-opt { cursor: default; }
+  .qa-card.revealed .qa-opt.correct {
+    border-color: var(--dark-gold);
+    background: rgba(184,134,11,.18);
+  }
+  .qa-card.revealed .qa-opt.correct .qa-letter { background: var(--dark-gold); color: #fff; }
+  .qa-card.revealed .qa-opt.wrong {
+    border-color: var(--danger);
+    background: rgba(155,58,46,.10);
+    opacity: .85;
+  }
+  .qa-card.revealed .qa-opt.wrong .qa-letter { background: var(--danger); color: #fff; }
+  .qa-ans.revealed {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: rgba(184,134,11,.08);
+    border-left: 3px solid var(--dark-gold);
+    border-radius: 4px;
+  }
+  .qa-correct { color: var(--dark-gold); font-weight: 600; display: block; }
+  .qa-explain { margin: 6px 0 0; color: var(--ink-soft); font-size: 14px; line-height: 1.7; }
+  .qa-view { margin-top: 8px; }
+  .pager { text-align: center; margin: 26px 0 10px; }
+  .btn.sm.disabled { opacity: .5; cursor: not-allowed; }
+  #page-info { display: block; margin-bottom: 10px; color: var(--ink-soft); font-size: 14px; letter-spacing: 1px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <img class="page-banner" src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=ancient%20Chinese%20scroll%20wisdom%2C%20bamboo%20slips%20with%20calligraphy%2C%20scholarly%20ink%20painting%20golden%20light&image_size=landscape_4_3" alt="古卷问答竹简" data-parallax="0.3">
+  <h2 class="page-title">凡人问答</h2>
+  <p class="page-sub">三百道题 · 选项不显示答案 · 点击「查看答案」揭晓</p>
+  <p class="disclaimer text-center">数据量过大，整理可能有误</p>
+
+  <div class="cat-bar" id="cat-bar"></div>
+
+  <div id="qa-list" class="tx-paper" style="padding:22px;border:1px solid var(--line-soft)"></div>
+
+  <div class="pager">
+    <span id="page-info"></span>
+    <div id="pager"></div>
+  </div>
+
+  <div class="card mt-lg">
+    <h3>反馈</h3>
+    <p class="muted">对题目或本站有任何建议，留言后将直达开发者面板。</p>
+    <div class="form-group"><label>昵称</label><input class="input" id="f-nick" placeholder="请填写昵称（匿名也可）"></div>
+    <div class="form-group"><label>联系方式（可选）</label><input class="input" id="f-contact" placeholder="手机号 / 邮箱 / QQ"></div>
+    <div class="form-group"><label>反馈内容</label><textarea class="input" id="f-content" rows="4" placeholder="您的反馈…"></textarea></div>
+    <div class="form-msg hidden" id="f-msg"></div>
+    <button class="btn" id="fb-submit">提交反馈</button>
+  </div>
+</div>
+
+<script src="/assets/js/common.js"></script>
+<script src="/assets/js/comments.js"></script>
+<script src="/assets/js/qa.js"></script>
+</body>
+</html>
