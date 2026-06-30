@@ -2,7 +2,7 @@
 const express = require('express');
 const crypto = require('crypto');
 const db = require('../db');
-const { setSession, getSession, extractToken, requireUser } = require('../middleware/auth');
+const { setSession, getSession, clearSession, cleanExpiredSessions, extractToken, requireUser } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -77,7 +77,9 @@ router.post('/login', wrap(async (req, res) => {
   if (row.password !== hash) return res.status(401).json({ error: '密码错误' });
 
   const token = genToken();
-  setSession(token, row.id, row.nickname);
+  await setSession(token, row.id, row.nickname);
+  // 顺带清理过期会话，避免 sessions 表无限膨胀
+  cleanExpiredSessions().catch(() => {});
   res.json({ id: row.id, nickname: row.nickname, token });
 }));
 
@@ -85,7 +87,7 @@ router.post('/login', wrap(async (req, res) => {
 router.get('/me', wrap(async (req, res) => {
   const token = extractToken(req);
   if (!token) return res.status(401).json({ error: '未登录' });
-  const session = getSession(token);
+  const session = await getSession(token);
   if (!session) return res.status(401).json({ error: '会话已过期' });
   const row = await db.queryOne(
     'SELECT id, phone, email, nickname, created_at FROM users WHERE id = $1',
@@ -96,13 +98,12 @@ router.get('/me', wrap(async (req, res) => {
 }));
 
 // GET /api/logout （可选，清除会话）
-router.post('/logout', (req, res) => {
+router.post('/logout', wrap(async (req, res) => {
   const token = extractToken(req);
   if (token) {
-    const { clearSession } = require('../middleware/auth');
-    clearSession(token);
+    await clearSession(token);
   }
   res.json({ ok: true });
-});
+}));
 
 module.exports = router;

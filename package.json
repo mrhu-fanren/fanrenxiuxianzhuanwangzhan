@@ -5,16 +5,19 @@
   "main": "server/app.js",
   "scripts": {
     "start": "node server/app.js",
-    "start:prod": "node server/app.js"
+    "start:prod": "node server/app.js",
+    "vercel": "vercel"
   },
   "dependencies": {
-    "better-sqlite3": "^12.11.1",
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "pg": "^8.11.5"
   },
+  "optionalDependencies": {
+    "better-sqlite3": "^12.11.1"
+  },
   "engines": {
-    "node": ">=16"
+    "node": ">=18"
   },
   "license": "MIT"
 }

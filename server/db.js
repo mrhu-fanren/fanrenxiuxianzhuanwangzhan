@@ -1,6 +1,7 @@
-// 数据库统一接口层（双模式）
-// - 若 process.env.DATABASE_URL 存在 → 用 pg (PostgreSQL)，适配 Render 等 PaaS
-// - 否则 → 用 better-sqlite3 (本地开发模式)，行为与原版完全一致
+// 数据库统一接口层（双模式 + Serverless 兼容）
+// - 若 process.env.DATABASE_URL 存在 → 用 pg (PostgreSQL)，适配 Render / Vercel 等 PaaS
+// - 否则若 better-sqlite3 可用 → sqlite 本地开发模式，行为与原版完全一致
+// - 否则（无 DATABASE_URL 且 better-sqlite3 不可用，如 Vercel）→ 抛错提示设置 DATABASE_URL
 const path = require('path');
 const fs = require('fs');
 
@@ -9,6 +10,15 @@ const USE_PG = !!process.env.DATABASE_URL;
 let pool = null;
 let sqliteDb = null;
 
+// better-sqlite3 是原生模块，在 Vercel 等 Serverless 平台无法安装/编译。
+// 用 try/catch 包裹 require，使其缺失时不阻断加载；仅在实际需要 sqlite 模式时再报错。
+let Database = null;
+try {
+  Database = require('better-sqlite3');
+} catch (e) {
+  Database = null;
+}
+
 if (USE_PG) {
   // PostgreSQL 模式
   const { Pool } = require('pg');
@@ -16,9 +26,8 @@ if (USE_PG) {
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }, // Render 需要
   });
-} else {
+} else if (Database) {
   // SQLite 模式：保持原状
-  const Database = require('better-sqlite3');
   const dataDir = path.join(__dirname, '..', 'data');
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
@@ -26,6 +35,12 @@ if (USE_PG) {
   const dbPath = path.join(dataDir, 'app.db');
   sqliteDb = new Database(dbPath);
   sqliteDb.pragma('journal_mode = WAL');
+} else {
+  // 既无 DATABASE_URL，又无 better-sqlite3：Serverless 环境下无法使用 sqlite
+  throw new Error(
+    '[凡人修仙传] 未配置 DATABASE_URL，且 better-sqlite3 不可用（Serverless 平台不支持原生模块）。' +
+    '请在环境变量中设置 DATABASE_URL（PostgreSQL 连接串）。'
+  );
 }
 
 function isPg() {
@@ -95,6 +110,7 @@ async function initDb() {
       `CREATE TABLE IF NOT EXISTS comments (id SERIAL PRIMARY KEY, type TEXT, nickname TEXT, content TEXT, contact TEXT, long_id TEXT, board TEXT, ts TEXT, is_spam INTEGER DEFAULT 0, user_id TEXT)`,
       `CREATE TABLE IF NOT EXISTS feedbacks (id SERIAL PRIMARY KEY, nickname TEXT, contact TEXT, content TEXT, source TEXT, ts TEXT, is_read INTEGER DEFAULT 0)`,
       `CREATE TABLE IF NOT EXISTS dev_sessions (token TEXT PRIMARY KEY, ts TEXT)`,
+      `CREATE TABLE IF NOT EXISTS sessions (token TEXT PRIMARY KEY, user_id TEXT, nickname TEXT, ts TEXT)`,
       `CREATE TABLE IF NOT EXISTS bilibili_stats (id SERIAL PRIMARY KEY, snapshot JSONB, ts TEXT)`,
       `CREATE INDEX IF NOT EXISTS idx_views_board ON views(board)`,
       `CREATE INDEX IF NOT EXISTS idx_views_ts ON views(ts)`,
@@ -149,6 +165,13 @@ async function initDb() {
 
       CREATE TABLE IF NOT EXISTS dev_sessions (
         token TEXT PRIMARY KEY,
+        ts TEXT
+      );
+
+      CREATE TABLE IF NOT EXISTS sessions (
+        token TEXT PRIMARY KEY,
+        user_id TEXT,
+        nickname TEXT,
         ts TEXT
       );
 

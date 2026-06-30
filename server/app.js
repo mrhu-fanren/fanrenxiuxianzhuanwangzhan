@@ -24,6 +24,21 @@ app.use('/data', express.static(path.join(__dirname, '..', 'data')));
 const pagesDir = path.join(__dirname, '..', 'pages');
 app.use(express.static(pagesDir));
 
+// 数据库初始化（本地与 Vercel Serverless 共用）
+// 冷启动时异步建表（CREATE TABLE IF NOT EXISTS，幂等），每个请求到来前确保已完成。
+// Vercel Serverless 无持久内存，不能依赖启动时一次性建表，故在此用 Promise 守门。
+const initPromise = db.initDb().catch((err) => {
+  console.error('[凡人修仙传] 初始化数据库失败:', err);
+  // 返回 err 而非 reject，避免 unhandledRejection；请求时再抛出
+  return err;
+});
+app.use((req, res, next) => {
+  initPromise.then((maybeErr) => {
+    if (maybeErr instanceof Error) return next(maybeErr);
+    next();
+  });
+});
+
 // API 路由
 app.use('/api', require('./routes/auth'));
 app.use('/api/stats', require('./routes/stats'));
@@ -53,15 +68,18 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: '服务器内部错误' });
 });
 
-// 异步启动：先建表，再 listen
-async function start() {
-  await db.initDb();
-  app.listen(PORT, () => {
-    console.log(`[凡人修仙传] 服务已启动: http://localhost:${PORT} (模式: ${db.isPg() ? 'PostgreSQL' : 'SQLite'})`);
+// 导出 app 供 Vercel Serverless 入口 (api/index.js) 复用
+module.exports = app;
+
+// 仅在直接运行时启动 HTTP 服务；Vercel 导入时不 listen（由平台接管）
+if (require.main === module) {
+  initPromise.then((maybeErr) => {
+    if (maybeErr instanceof Error) {
+      console.error('[凡人修仙传] 启动失败:', maybeErr);
+      process.exit(1);
+    }
+    app.listen(PORT, () => {
+      console.log(`[凡人修仙传] 服务已启动: http://localhost:${PORT} (模式: ${db.isPg() ? 'PostgreSQL' : 'SQLite'})`);
+    });
   });
 }
-
-start().catch((err) => {
-  console.error('[凡人修仙传] 启动失败:', err);
-  process.exit(1);
-});
